@@ -58,20 +58,10 @@ class AdcsOnlineResponder : ResourceBase
             Ensure = 'Absent'
         }
 
-        try
-        {
-            $null = Install-AdcsOnlineResponder -Credential  -WhatIf
-        }
-        #catch [System.NotImplementedException]
-        catch [Microsoft.CertificateServices.Deployment.Common.OCSP.OnlineResponderSetupException]
-        {
-            # CA is already installed
+        $service = Get-Service -Name 'OnlineResponder'
+
+        if ($service) {
             $state.Ensure = 'Present'
-        }
-        catch
-        {
-            # Something else went wrong
-            throw $_
         }
 
         return $state
